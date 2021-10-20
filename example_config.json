@@ -1,0 +1,24 @@
+{ "version": "0.1",
+  "teams": [{
+      "name": "ETH Zurich",
+      "token": "ETH"
+  }, {
+      "name": "UIUC",
+      "token": "UIUC"
+  }, {
+      "name": "Texas A&M",
+      "token": "TAMU"
+  }, {
+      "name": "Monash",
+      "token": "Monash"
+  }, {
+      "name": "Sun Yat-Sen",
+      "token": "SYS"
+  }, {
+      "name": "test",
+      "token": "test"
+  }, {
+      "name": "admin",
+      "token": "admin"
+  }]
+}

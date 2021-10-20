@@ -1,0 +1,35 @@
+# Temporary and binary files
+*~
+*.py[cod]
+__pycache__/*
+.cache/*
+.*.swp
+*/.ipynb_checkpoints/*
+.DS_Store
+
+# Project files
+.ropeproject
+.project
+.pydevproject
+.settings
+.idea
+.vscode
+tags
+
+# Package files
+*.egg
+*.eggs/
+.installed.cfg
+*.egg-info
+
+# Unittest and coverage
+htmlcov/*
+.coverage
+.coverage.*
+.tox
+coverage.xml
+.pytest_cache/
+
+# Per-project virtualenvs
+.venv*/
+.conda*/
