@@ -35,19 +35,24 @@ Submit an answer (POST to `/answers/{problem}` endpoint):
 ```
 curl -X POST \
      -H "accept: application/json" \
-     -H "Authorization: token SYS" \
+     -H "Authorization: token $TOKEN" \
      -d "1 Exaflop" \
      $url/answers/HPCG; echo
 ```
 
-Example response: `[]` An empty list means no errors.
+Example response: `{}`
+
+No errors means the answer was accepted.
 
 Example response:
 ```
-[ "Response text is missing 'Date:' line.",
-  "Response text was too long."
-]
+{ 'errors':
+    [ "Response text is missing 'Date:' line.",
+      "Response text was too long."
+    ]
+}
 ```
+
 This list of errors means the answer was not accepted.
 There are two things that need to be fixed.
 
@@ -57,12 +62,12 @@ Check submitted answers (GET from `/answers` endpoint):
 ```
 curl -X GET \
      -H "accept: application/json" \
-     -H "Authorization: token SYS" \
+     -H "Authorization: token $TOKEN" \
      $url/answers; echo
 ```
 
 Example response:
-{'HPL': 0, 'HPCG': 1, 'Gromacs': 0, 'JohnTheRipper': 0, 'Mystery': 0}
+{"HPL": 0, "HPCG": 1, "Gromacs": 0, "JohnTheRipper": 0, "Mystery": 0}
 
 ---
 
@@ -71,7 +76,7 @@ a particular problem (GET from `/answers/{problem}` endpoint):
 ```
 curl -X GET \
      -H "accept: application/json" \
-     -H "Authorization: token SYS" \
+     -H "Authorization: token $TOKEN" \
      $url/answers/Gromacs; echo
 ```
 

@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 from datetime import datetime
 
 from fastapi import FastAPI, Header, Body, HTTPException
@@ -7,6 +7,7 @@ from sqlalchemy import func, select
 from database import open_app, close_app, database, answers
 from config import server_config
 from models import ProblemName, AnswerSummary, Team
+from check import check_answer
 
 app = FastAPI()
 
@@ -44,16 +45,6 @@ def validate_token(authorization) -> str:
         headers={"X-Error": "authentication error"},
     )
 
-def check_answer(problem_name : ProblemName, answer : str) -> List[str]:
-    """Provide a list of error strings for the given answer.
-
-    Returning an empty list means the answer is OK.
-
-    The error messages should be VERY informative, since
-    answers failing this test should not be added to the DB.
-    """
-    return []
-
 @app.get("/team")
 async def get_team(authorization: str = Header('')):
     return validate_token(authorization)
@@ -68,7 +59,12 @@ async def get_answers(authorization: str = Header('')):
               . where(answers.c.team == team) \
               . group_by(answers.c.problem)
     ans = await database.fetch_all(query)
-    return dict(ans)
+    ret = dict(ans)
+    # Fill out zeros in all missing categories.
+    for problem in ProblemName:
+        if problem.value not in ret:
+            ret[problem.value] = 0
+    return ret
 
 @app.get("/answers/{problem_name}", response_model=List[AnswerSummary])
 async def get_answer(problem_name: ProblemName,
@@ -83,21 +79,23 @@ async def get_answer(problem_name: ProblemName,
     return await database.fetch_all(query)
 
 # Not recommended - read request directly as binary data
-@app.post("/answers/{problem_name}", response_model=List[str])
+@app.post("/answers/{problem_name}", response_model=Dict[str,Any])
 async def set_answer(problem_name: ProblemName,
                      text: str = Body(''),
                      authorization: str = Header('')):
     """Appends the team's answer for the given problem.
 
-    Returns an empty list if the answer is accepted
-    or else a list of error strings otherwise.
+    Returns a dictionary containing results from the
+    validation.  If 'errors' are present, it contains
+    a list of error strings otherwise explaining why
+    the answer was not accepted.
     """
     timestamp = datetime.now()
     team = validate_token(authorization)
 
-    errors = check_answer(problem_name, text)
-    if len(errors) > 0:
-        return errors
+    replies = check_answer(problem_name, text)
+    if 'errors' in replies and len(replies['errors']) > 0:
+        return replies
     query = answers.insert().values(
                 team = team,
                 problem = problem_name.value,
@@ -106,4 +104,4 @@ async def set_answer(problem_name: ProblemName,
                 )
     last_record_id = await database.execute(query)
 
-    return []
+    return replies
