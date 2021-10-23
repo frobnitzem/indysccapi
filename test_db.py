@@ -4,6 +4,8 @@ import asyncio
 
 from sqlalchemy import Table
 
+from admin_api import full_stats
+
 from database import open_app, close_app, database, answers
 from sqlalchemy import func, select, table, column
 #from models import ProblemName, AnswerSummary, Team
@@ -24,10 +26,14 @@ async def test2():
     x = await database.fetch_all(query)
     print(x)
 
+async def test3():
+    print( await full_stats() )
+
 async def main():
     await open_app()
-    await test1()
-    await test2()
+    #await test1()
+    #await test2()
+    await test3()
     await close_app()
 
 asyncio.run(main())

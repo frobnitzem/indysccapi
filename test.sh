@@ -33,3 +33,5 @@ curl -X GET \
      -H 'accept: application/json' \
      -H 'Authorization: token TAMU' \
      $url/answers; echo
+
+curl -X GET -H 'accept: application/json' -H 'Authorization: token admin' $url/admin/answers/Texas%20A%26M/HPCG
