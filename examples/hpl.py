@@ -24,7 +24,7 @@ def parse_hpl(text):
 
     state = 0
     for line in text.split('\n'):
-        print(state,line)
+        #print(state,line)
         if state == 0 and hdr.match(line):
             state = 1
             continue
@@ -45,6 +45,3 @@ def test_parse_hpl():
     print(ans)
     assert len(ans['Gflops']) == 1
     assert ans['Gflops'][0] > 0.0
-
-if __name__=="__main__":
-    test_parse_hpl()
