@@ -38,6 +38,8 @@ curl -X POST \
      -H "Authorization: token $TOKEN" \
      -d "1 Exaflop" \
      $url/answers/HPCG; echo
+# Note: Replace -d "1 Exaflop" with --data-binary @my_output_file.txt
+# to send file contents instead of a test string.
 ```
 
 Example response: `{}`
